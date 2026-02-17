@@ -2,7 +2,7 @@
   "reef": "1.0",
   "type": "shoal",
   "name": "daily-cockpit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Personal command center that monitors WhatsApp, Slack, iMessage, Gmail, and Google Calendar to deliver organized briefings, priority alerts, and interactive Q&A.",
   "author": "Dash Feinblum",
   "license": "MIT",
@@ -17,14 +17,9 @@
       "required": true,
       "sensitive": true
     },
-    "GOG_ACCOUNT_1": {
+    "GOG_ACCOUNTS": {
       "type": "string",
-      "description": "Primary Gmail address for Gmail and Google Calendar polling.",
-      "required": true
-    },
-    "GOG_ACCOUNT_2": {
-      "type": "string",
-      "description": "Secondary Gmail address for Gmail and Google Calendar polling.",
+      "description": "Comma-separated Google accounts with scope. Format: email:scope where scope is 'email', 'cal', or 'both'. Example: user1@gmail.com:both,user2@gmail.com:email",
       "required": true
     },
     "DISCORD_CHANNEL": {
@@ -40,7 +35,7 @@
       "role": "collector",
       "model": "anthropic/claude-sonnet-4-20250514",
       "tools": {
-        "allow": ["gog", "imsg", "wacli", "slack", "sessions_send", "sessions_history"]
+        "allow": ["gog", "imsg", "wacli", "slack", "read", "write", "sessions_send", "sessions_history"]
       },
       "sandbox": {
         "network": true,
@@ -53,7 +48,7 @@
       "role": "coordinator",
       "model": "anthropic/claude-opus-4-20250514",
       "tools": {
-        "allow": ["summarize", "sessions_send", "sessions_history"]
+        "allow": ["summarize", "read", "write", "sessions_send", "sessions_history"]
       },
       "sandbox": {
         "network": true,
@@ -75,13 +70,13 @@
     {
       "schedule": "*/5 8-19 * * *",
       "agent": "monitor",
-      "prompt": "Run a LIGHT SCAN across all 5 sources (Gmail account 1, Gmail account 2, Google Calendar, Slack, iMessage, WhatsApp). Check for urgent or time-sensitive items only. If anything urgent is found, immediately forward to synthesizer for alert delivery. Do not produce a digest.",
+      "prompt": "Run a LIGHT SCAN across all sources (Google accounts per GOG_ACCOUNTS config, Slack, iMessage, WhatsApp). Check for urgent or time-sensitive items only. If anything urgent is found, immediately forward to synthesizer for alert delivery. Do not produce a digest.",
       "timezone": "America/Sao_Paulo"
     },
     {
       "schedule": "*/30 8-19 * * *",
       "agent": "monitor",
-      "prompt": "Run a FULL HARVEST across all 5 sources (Gmail account 1, Gmail account 2, Google Calendar, Slack, iMessage, WhatsApp). Collect all new messages, events, and updates since last harvest. Categorize by source and priority. Send the complete harvest to synthesizer for digest compilation.",
+      "prompt": "Run a FULL HARVEST across all sources (Google accounts per GOG_ACCOUNTS config, Slack, iMessage, WhatsApp). Collect all new messages, events, and updates since last harvest. Categorize by source and priority. Send the complete harvest to synthesizer for digest compilation.",
       "timezone": "America/Sao_Paulo"
     },
     {
@@ -102,7 +97,7 @@
     "services": [
       {
         "name": "Google OAuth",
-        "description": "OAuth credentials for Gmail and Google Calendar read-only access via gog skill.",
+        "description": "OAuth credentials for each account in GOG_ACCOUNTS. Read-only scopes only: gmail.readonly, calendar.readonly.",
         "required": true
       },
       {

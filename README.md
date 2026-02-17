@@ -32,8 +32,7 @@ WhatsApp┘               User Q&A (Discord)
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `SLACK_USER_TOKEN` | string | Yes | — | Slack user OAuth token (`xoxp-`). Used for read-only access to Slack messages. Sensitive. |
-| `GOG_ACCOUNT_1` | string | Yes | — | Primary Gmail address for Gmail and Google Calendar polling. |
-| `GOG_ACCOUNT_2` | string | Yes | — | Secondary Gmail address for Gmail and Google Calendar polling. |
+| `GOG_ACCOUNTS` | string | Yes | — | Comma-separated Google accounts with scope. Format: `email:scope` where scope is `email`, `cal`, or `both`. Example: `user1@gmail.com:both,user2@gmail.com:email` |
 | `DISCORD_CHANNEL` | string | Yes | — | Private Discord channel ID for briefings, digests, alerts, and Q&A. |
 
 ## Setup
@@ -42,7 +41,7 @@ WhatsApp┘               User Q&A (Discord)
 
 - OpenClaw >= 0.5.0
 - Skills installed: `gog`, `imsg`, `wacli`, `slack`, `summarize`
-- Google OAuth configured for both Gmail accounts (read-only)
+- Google OAuth configured for each Gmail account listed in `GOG_ACCOUNTS` (read-only scopes only)
 - Slack user token (xoxp-) with read access
 - macOS host (required for iMessage access)
 - WhatsApp database pre-synced via wacli
@@ -56,8 +55,7 @@ WhatsApp┘               User Q&A (Discord)
 
 2. **Fill in your values in `.env`:**
    - `SLACK_USER_TOKEN` — Your Slack user OAuth token
-   - `GOG_ACCOUNT_1` — Primary Gmail address
-   - `GOG_ACCOUNT_2` — Secondary Gmail address
+   - `GOG_ACCOUNTS` — Google accounts with scopes (e.g. `dash@gmail.com:both,work@gmail.com:email`)
    - `DISCORD_CHANNEL` — Discord channel ID for output
 
 3. **Install the formation:**
@@ -97,11 +95,24 @@ Send messages in the configured Discord channel:
 
 ## Security Notes
 
-- All source access is **strictly read-only**
+### Read-Only Enforcement
+
+This formation **never sends, replies, modifies, or deletes** anything in any source. Read-only access is enforced at three layers:
+
+1. **OAuth / Token Scopes** (hardest to bypass)
+   - **Google OAuth** must use `gmail.readonly` and `calendar.readonly` only. Do NOT grant `gmail.send`, `gmail.modify`, `calendar.events`, or any write scope.
+   - **Slack user token** (`xoxp-`) must use read-only scopes only: `channels:history`, `channels:read`, `groups:history`, `groups:read`, `im:history`, `im:read`, `mpim:history`, `users:read`. Do NOT grant `chat:write`, `channels:write`, `reactions:write`, or any write scope.
+   - **iMessage** — inherently read-only (queries local SQLite database owned by Messages.app)
+   - **WhatsApp** — inherently read-only (queries pre-synced database export via wacli)
+
+2. **Skill Command Restrictions** — Each skill's permitted and forbidden operations are documented in `agents/monitor/knowledge/static/source-polling-reference.md`. Only read/list commands are permitted; all send/reply/create/modify/delete commands are explicitly forbidden.
+
+3. **SOUL Behavioral Rules** — Agent SOULs contain explicit prohibitions against calling write operations, reinforcing the policy even if a skill technically exposes them.
+
+### Other Security Notes
+
 - Slack uses a user token — no bot presence in workspace
-- iMessage reads from local database — coexists with existing bot
-- WhatsApp reads from pre-synced database only
-- Sensitive tokens are never stored in plaintext (marked `sensitive: true`)
+- Sensitive tokens are marked `sensitive: true` in the manifest and never stored in plaintext
 
 ## Teardown / Uninstall
 
