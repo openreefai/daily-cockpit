@@ -2,7 +2,7 @@
   "reef": "1.0",
   "type": "shoal",
   "name": "daily-cockpit",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Personal command center that monitors WhatsApp, Slack, iMessage, Gmail, and Google Calendar to deliver organized briefings, priority alerts, and interactive Q&A.",
   "author": "Dash Feinblum",
   "license": "MIT",
@@ -33,9 +33,9 @@
       "source": "agents/monitor",
       "description": "Polls WhatsApp, Slack, iMessage, Gmail, and Google Calendar. Light scan every 5 min for urgency detection, full harvest every 30 min. Operates 08:00–19:00 São Paulo time. Read-only access to all sources.",
       "role": "collector",
-      "model": "anthropic/claude-sonnet-4-20250514",
+      "model": "anthropic/claude-opus-4-6",
       "tools": {
-        "allow": ["gog", "imsg", "wacli", "slack", "read", "write", "sessions_list", "sessions_send", "sessions_history"]
+        "allow": ["gog", "imsg", "wacli", "slack", "read", "write", "sessions_list", "sessions_spawn", "sessions_send", "sessions_history"]
       },
       "sandbox": {
         "network": true,
@@ -46,9 +46,9 @@
       "source": "agents/synthesizer",
       "description": "Produces morning briefings, 30-minute digests, priority alerts, and handles interactive Q&A via Discord. Only user-facing agent in the formation.",
       "role": "coordinator",
-      "model": "anthropic/claude-opus-4-20250514",
+      "model": "anthropic/claude-opus-4-6",
       "tools": {
-        "allow": ["summarize", "message", "read", "write", "sessions_send", "sessions_history"]
+        "allow": ["summarize", "message", "read", "write", "sessions_spawn", "sessions_send", "sessions_history"]
       },
       "sandbox": {
         "network": true,
