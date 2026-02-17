@@ -1,0 +1,4 @@
+.env
+*.log
+agents/*/knowledge/dynamic/*
+!agents/*/knowledge/dynamic/.gitkeep

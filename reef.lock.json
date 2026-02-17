@@ -1,0 +1,36 @@
+{
+  "reef": "1.0",
+  "name": "daily-cockpit",
+  "version": "0.1.0",
+  "lockedAt": "2026-02-17T07:08:00.000Z",
+  "dependencies": {
+    "skills": {
+      "gog": {
+        "version": "1.0.0",
+        "resolved": "clawhub:gog@1.0.0"
+      },
+      "imsg": {
+        "version": "1.0.0",
+        "resolved": "clawhub:imsg@1.0.0"
+      },
+      "wacli": {
+        "version": "1.0.0",
+        "resolved": "clawhub:wacli@1.0.0"
+      },
+      "slack": {
+        "version": "1.0.0",
+        "resolved": "clawhub:slack@1.0.0"
+      },
+      "summarize": {
+        "version": "1.0.0",
+        "resolved": "clawhub:summarize@1.0.0"
+      }
+    }
+  },
+  "integrity": {
+    "agents/monitor/SOUL.md": "sha256-08274741c7a9113a172498dd9c16be404972db2caa8954cf7259e7916d6e5374",
+    "agents/monitor/IDENTITY.md": "sha256-d7e40c4a4bfb6776b7ce6aa0345032a5110b6902087a34b15e32f56fe5ef11f4",
+    "agents/synthesizer/SOUL.md": "sha256-5ee485eb1bd2a46a109f991c49841de5f2517513fa4b2358a8c10c8832b8405f",
+    "agents/synthesizer/IDENTITY.md": "sha256-8b4c91c7de3d89ce93e79fee51a5a9d5adda22efbc74d767a6e855c3b5fcbfda"
+  }
+}

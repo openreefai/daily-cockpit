@@ -1,0 +1,130 @@
+{
+  "reef": "1.0",
+  "type": "shoal",
+  "name": "daily-cockpit",
+  "version": "0.1.0",
+  "description": "Personal command center that monitors WhatsApp, Slack, iMessage, Gmail, and Google Calendar to deliver organized briefings, priority alerts, and interactive Q&A.",
+  "author": "Dash Feinblum",
+  "license": "MIT",
+  "namespace": "daily-cockpit",
+  "compatibility": {
+    "openclaw": ">=0.5.0"
+  },
+  "variables": {
+    "SLACK_USER_TOKEN": {
+      "type": "string",
+      "description": "Slack user OAuth token (xoxp-). Used for read-only access to Slack messages.",
+      "required": true,
+      "sensitive": true
+    },
+    "GOG_ACCOUNT_1": {
+      "type": "string",
+      "description": "Primary Gmail address for Gmail and Google Calendar polling.",
+      "required": true
+    },
+    "GOG_ACCOUNT_2": {
+      "type": "string",
+      "description": "Secondary Gmail address for Gmail and Google Calendar polling.",
+      "required": true
+    },
+    "DISCORD_CHANNEL": {
+      "type": "string",
+      "description": "Private Discord channel ID for briefings, digests, alerts, and Q&A.",
+      "required": true
+    }
+  },
+  "agents": {
+    "monitor": {
+      "source": "agents/monitor",
+      "description": "Polls WhatsApp, Slack, iMessage, Gmail, and Google Calendar. Light scan every 5 min for urgency detection, full harvest every 30 min. Operates 08:00–19:00 São Paulo time. Read-only access to all sources.",
+      "role": "collector",
+      "model": "anthropic/claude-sonnet-4-20250514",
+      "tools": {
+        "allow": ["gog", "imsg", "wacli", "slack"]
+      },
+      "sandbox": {
+        "network": true,
+        "filesystem": "restricted"
+      }
+    },
+    "synthesizer": {
+      "source": "agents/synthesizer",
+      "description": "Produces morning briefings, 30-minute digests, priority alerts, and handles interactive Q&A via Discord. Only user-facing agent in the formation.",
+      "role": "coordinator",
+      "model": "anthropic/claude-opus-4-20250514",
+      "tools": {
+        "allow": ["summarize"]
+      },
+      "sandbox": {
+        "network": true,
+        "filesystem": "restricted"
+      }
+    }
+  },
+  "agentToAgent": {
+    "monitor": ["synthesizer"],
+    "synthesizer": []
+  },
+  "bindings": [
+    {
+      "channel": "{{DISCORD_CHANNEL}}",
+      "agent": "synthesizer"
+    }
+  ],
+  "cron": [
+    {
+      "schedule": "*/5 8-19 * * *",
+      "agent": "monitor",
+      "prompt": "Run a LIGHT SCAN across all 5 sources (Gmail account 1, Gmail account 2, Google Calendar, Slack, iMessage, WhatsApp). Check for urgent or time-sensitive items only. If anything urgent is found, immediately forward to synthesizer for alert delivery. Do not produce a digest.",
+      "timezone": "America/Sao_Paulo"
+    },
+    {
+      "schedule": "*/30 8-19 * * *",
+      "agent": "monitor",
+      "prompt": "Run a FULL HARVEST across all 5 sources (Gmail account 1, Gmail account 2, Google Calendar, Slack, iMessage, WhatsApp). Collect all new messages, events, and updates since last harvest. Categorize by source and priority. Send the complete harvest to synthesizer for digest compilation.",
+      "timezone": "America/Sao_Paulo"
+    },
+    {
+      "schedule": "0 8 * * *",
+      "agent": "synthesizer",
+      "prompt": "Produce the MORNING BRIEFING. Request overnight summary from monitor if not already received. Include: today's calendar overview, overnight messages by priority, pending action items, and weather/context if available. Deliver to Discord channel.",
+      "timezone": "America/Sao_Paulo"
+    }
+  ],
+  "dependencies": {
+    "skills": {
+      "gog": "^1.0.0",
+      "imsg": "^1.0.0",
+      "wacli": "^1.0.0",
+      "slack": "^1.0.0",
+      "summarize": "^1.0.0"
+    },
+    "services": [
+      {
+        "name": "Google OAuth",
+        "description": "OAuth credentials for Gmail and Google Calendar read-only access via gog skill.",
+        "required": true
+      },
+      {
+        "name": "Slack",
+        "description": "Slack workspace with user token (xoxp-) for read-only message access.",
+        "required": true
+      },
+      {
+        "name": "Discord",
+        "description": "Discord server with a private channel for output delivery.",
+        "required": true
+      }
+    ]
+  },
+  "validation": {
+    "agent_exists": true,
+    "file_exists": true,
+    "binding_active": true,
+    "cron_exists": true,
+    "agent_responds": {
+      "enabled": false,
+      "timeout": 30
+    }
+  }
+}
