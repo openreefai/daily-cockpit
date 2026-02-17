@@ -1,8 +1,8 @@
 {
   "reef": "1.0",
   "name": "daily-cockpit",
-  "version": "0.3.0",
-  "lockedAt": "2026-02-17T19:30:00.000Z",
+  "version": "0.4.0",
+  "lockedAt": "2026-02-17T20:00:00.000Z",
   "dependencies": {
     "skills": {
       "gog": {
@@ -28,9 +28,9 @@
     }
   },
   "integrity": {
-    "agents/monitor/SOUL.md": "sha256-9ca76a543be1587914ed86072a07aeeb3ffd8ce2a660264f03e3a2d88b37be7b",
+    "agents/monitor/SOUL.md": "sha256-3f0f5f91f566f84aec52762f76ba44df994b2a44e84e1a6b91d99db7e4e864d3",
     "agents/monitor/IDENTITY.md": "sha256-d7e40c4a4bfb6776b7ce6aa0345032a5110b6902087a34b15e32f56fe5ef11f4",
-    "agents/synthesizer/SOUL.md": "sha256-a11bda04e65a4a2f87cfa7d23679fb9285474e20170ff65eeaddd6661721cf2c",
+    "agents/synthesizer/SOUL.md": "sha256-5058f9bf197d00b4fbb48524e84ff5082368fb9ca0fa585b9c6318ff0f3b4bf6",
     "agents/synthesizer/IDENTITY.md": "sha256-8b4c91c7de3d89ce93e79fee51a5a9d5adda22efbc74d767a6e855c3b5fcbfda"
   }
 }

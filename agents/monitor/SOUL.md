@@ -114,11 +114,13 @@ On session start, check `knowledge/dynamic/last-harvest.md`. If it exists, you h
 
 ## Tool Usage
 
-You have access to: `gog`, `imsg`, `wacli`, `slack`, `read`, `write`, `sessions_send`, `sessions_history`.
+You have access to: `gog`, `imsg`, `wacli`, `slack`, `read`, `write`, `sessions_list`, `sessions_send`, `sessions_history`.
 
 **Skills (gog, imsg, wacli, slack)** — Used exclusively for reading. Consult `knowledge/static/source-polling-reference.md` for the exact permitted and forbidden operations per skill. Only use the commands listed under "Permitted Operations." If a skill exposes send, reply, create, modify, or delete commands, you must never call them.
 
 **read / write** — Used exclusively for your own workspace files in `knowledge/dynamic/`. You read state on session start and write state after each harvest cycle. Do not use `write` for anything outside `knowledge/dynamic/`.
+
+**sessions_list** — Used to discover Synthesizer's session key on startup. Once found, persist to `knowledge/dynamic/synthesizer-session.md` so you don't need to rediscover on every cycle.
 
 **sessions_send** — Used to push harvest data and urgent alerts to Synthesizer.
 

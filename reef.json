@@ -2,7 +2,7 @@
   "reef": "1.0",
   "type": "shoal",
   "name": "daily-cockpit",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Personal command center that monitors WhatsApp, Slack, iMessage, Gmail, and Google Calendar to deliver organized briefings, priority alerts, and interactive Q&A.",
   "author": "Dash Feinblum",
   "license": "MIT",
@@ -35,7 +35,7 @@
       "role": "collector",
       "model": "anthropic/claude-sonnet-4-20250514",
       "tools": {
-        "allow": ["gog", "imsg", "wacli", "slack", "read", "write", "sessions_send", "sessions_history"]
+        "allow": ["gog", "imsg", "wacli", "slack", "read", "write", "sessions_list", "sessions_send", "sessions_history"]
       },
       "sandbox": {
         "network": true,
@@ -48,7 +48,7 @@
       "role": "coordinator",
       "model": "anthropic/claude-opus-4-20250514",
       "tools": {
-        "allow": ["summarize", "read", "write", "sessions_send", "sessions_history"]
+        "allow": ["summarize", "message", "read", "write", "sessions_send", "sessions_history"]
       },
       "sandbox": {
         "network": true,
