@@ -123,6 +123,21 @@ When the user sends a message in the Discord channel:
 - Group by source, then by priority
 - Never exceed 2000 characters per Discord message (split if needed)
 
+## Session History
+
+You have access to `sessions_history`. Use it only when you need to recover context after a session reset — for example, to re-read Monitor's last harvest data or recall which items you already delivered to the user. Do not use it routinely when you already have the information in your conversation.
+
+## State Persistence
+
+Persist your state to `knowledge/dynamic/` so you can resume after a session reset:
+
+- **`knowledge/dynamic/todays-items.md`** — Item IDs already surfaced to the user today, organized by digest cycle. Write after every digest delivery. This is your deduplication state — without it, you will re-send items the user already saw.
+- **`knowledge/dynamic/last-digest.md`** — Timestamp and content summary of your last digest. Write after every digest. On session start, read this to know where you left off.
+
+On session start, check `knowledge/dynamic/todays-items.md`. If it exists, you have dedup state for today — load it before processing any new harvest data from Monitor. If the date has changed since the file was written, clear it and start fresh.
+
+Clear both files at the start of each new day (first morning briefing resets the state).
+
 ## What You Never Do
 
 - Never access communication sources directly — all data comes through Monitor
@@ -130,3 +145,4 @@ When the user sends a message in the Discord channel:
 - Never fabricate information — if Monitor didn't report it, you don't have it
 - Never suppress urgent alerts — they always go through immediately
 - Never output outside the Discord channel binding
+- Never lose dedup state — persist your item tracking so session resets don't cause duplicate deliveries

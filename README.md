@@ -60,14 +60,14 @@ WhatsApp┘               User Q&A (Discord)
    - `GOG_ACCOUNT_2` — Secondary Gmail address
    - `DISCORD_CHANNEL` — Discord channel ID for output
 
-3. **Deploy the formation:**
+3. **Install the formation:**
    ```bash
-   reef deploy
+   reef install .
    ```
 
 4. **Verify:**
    ```bash
-   reef validate
+   reef validate .
    ```
 
 ## Schedule
@@ -107,9 +107,9 @@ Send messages in the configured Discord channel:
 
 To remove the daily-cockpit formation:
 
-1. **Stop the formation** (removes cron jobs and agent sessions):
+1. **Uninstall the formation** (removes cron jobs and agent sessions):
    ```bash
-   reef undeploy daily-cockpit
+   reef uninstall daily-cockpit
    ```
 
 2. **Verify agents are stopped:**
@@ -126,7 +126,7 @@ To remove the daily-cockpit formation:
    - Remove or revoke your `SLACK_USER_TOKEN` from Slack app settings
    - Revoke Google OAuth tokens if no longer needed
 
-> **Note:** Undeploying does **not** affect your data sources. No messages, emails, or calendar events are modified or deleted — the formation is strictly read-only.
+> **Note:** Uninstalling does **not** affect your data sources. No messages, emails, or calendar events are modified or deleted — the formation is strictly read-only.
 
 ## Directory Structure
 
